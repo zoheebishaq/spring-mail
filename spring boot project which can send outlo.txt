@@ -1,0 +1,81 @@
+spring boot project which can send outlook mail
+
+To create a Spring Boot project that can send Outlook emails, you will need to use the JavaMail API to handle the sending of the email, and configure the application to use the Outlook SMTP server.
+
+First, you will need to add the JavaMail API dependency to your project's pom.xml file:
+
+Copy code
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>javax.mail</artifactId>
+    <version>1.6.2</version>
+</dependency>
+Next, you will need to create a service or component class that will handle the sending of the email. In this class, you will use the JavaMail API to create a new message, set the recipient, subject, and body of the email, and then use the Transport class to send the message.
+
+You will also need to configure the application with the Outlook SMTP server information, including the host, port, username, and password.
+
+Finally, you can use the service or component class to send the email in a controller or other class as needed.
+
+Copy code
+@Autowired
+private JavaMailSender javaMailSender;
+
+public void sendMail(String to, String subject, String body) {
+    SimpleMailMessage mail = new SimpleMailMessage();
+    mail.setTo(to);
+    mail.setSubject(subject);
+    mail.setText(body);
+    javaMailSender.send(mail);
+}
+It's also important to note that you will need to provide your email and password in the configuration file of the application to send mail.
+
+
+
+
+zoheeb ishaque
+configure the application with the Outlook SMTP server information
+To configure the application to use the Outlook SMTP server, you will need to add the following information to the application.properties or application.yml file:
+
+Copy code
+spring.mail.host=smtp-mail.outlook.com
+spring.mail.port=587
+spring.mail.username=your_email@outlook.com
+spring.mail.password=your_password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+You will need to replace your_email@outlook.com and your_password with your Outlook email address and password, respectively.
+
+You also need to configure the security setting for your outlook email to allow less secure apps to connect to it.
+
+Alternatively, you can also configure the above properties in the application.yml file
+
+Copy code
+spring:
+  mail:
+    host: smtp-mail.outlook.com
+    port: 587
+    username: your_email@outlook.com
+    password: your_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+You can also configure the mail properties as a bean in the configuration file
+
+Copy code
+@Bean
+public JavaMailSender getJavaMailSender() {
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost("smtp-mail.outlook.com");
+    mailSender.setPort(587);
+    mailSender.setUsername("your_email@outlook.com");
+    mailSender.setPassword("your_password");
+    Properties props = mailSender.getJavaMailProperties();
+    props.put("mail.transport.protocol", "smtp");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    return mailSender;
+}
+Once you have added the SMTP server information to the application, you can use the service or component class you created earlier to send emails through the Outlook SMTP server.
